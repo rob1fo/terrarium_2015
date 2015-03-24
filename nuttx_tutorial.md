@@ -29,11 +29,9 @@ La compilation de kconfig-frontends avec support de mconf (textuel) nécessite l
 
     sudo aptitutde install gperf libncurses5-dev flex bison automake autoconf
 
-
 #### Récupération de NuttX depuis les sources (attention, version non supposée stable)
 
     git clone http://git.code.sf.net/p/nuttx/git ~/projects/nuttx-code
-
 
 ## Compilation de kconfig spécifiquement pour NuttX (pour ne pas polluer une installation existante)
 
@@ -66,7 +64,7 @@ ou si pas administrateur sur la machine (par exemple en salle de TP IUT)
 
     make installcheck
 si OK alors
-   make install
+    make install
 puis
     ajout de kconfig dans votre PATH
     ajouter a la fin du ~/.bashrc la ligne [export PATH=$PATH:~/kconfig-nuttx/bin]
@@ -74,13 +72,21 @@ puis
 
 ### configuration de NuttX
 
-    cd ~/projects/nuttx-code/tools
+    cd ~/projects/nuttx-code/nuttx/tools
     ./configure.sh sam4s-xplained/nsh
-	cd..
-	APPSDIR=../apps kconfig-nuttx-mconf Kconfig
+    cd ..
+    APPSDIR=../apps kconfig-nuttx-mconf Kconfig
+
+Attention: Ne pas faire 'make menuconfig' car nous avons créé un kconfig custom, le makefile de NuttX ne gère pas ce cas.
 	
-	pour chaque option, il y a une aide (appui sur h) qui est un peu cryptique par moment.
-	
+pour chaque option, il y a une aide (appui sur h) qui est un peu cryptique par moment.
+
+### Set the environment
+    . ./setenv.sh
+    make
+    
+Les fichiers résultants (RTOS + applications) se retrouvent dans ~/projects/nuttx-code/nuttx/
+- le fichier ELF: nuttx
 	
 ## Téléversement sur la carte
 ### Segger JLink
@@ -94,6 +100,7 @@ puis
 
     cd ~/projects/terrarium
     git checkout -b ma_partie_à_concevoir  <-- à remplacer par ce qui vous est identifié
+    mkdir ma_partie_à_concevoir
     cd ma_partie_à_concevoir
 
 commencer à coder l'application qui vous est assignée :-D
