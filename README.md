@@ -1,2 +1,2 @@
-# terrarium_2015
-travaux pratiques des étudiants en cours 'embarqué' de 2015G2
+# Terrarium 2015G2
+Travaux pratiques des étudiants en cours 'embarqué' de 2015G2
