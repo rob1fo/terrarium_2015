@@ -37,17 +37,14 @@ La compilation de kconfig-frontends avec support de mconf (textuel) nécessite l
 
     cd ~/projects/nuttx-code/nx/misc/kconfig-frontends/
     mkdir ~/kconfig-nuttx
-ou 
-    mkdir /home/[user]/kconfig-nuttx
-dans lequel [user] est votre nom de compte utilisateur
 
 Si vous ne désirez que les versions texte+ncurses:
 
-    ./configure --program-prefix=kconfig-nuttx- --prefix=/home/[user]/kconfig-nuttx --enable-frontends=nconf,mconf
+    ./configure --program-prefix=kconfig-nuttx- --prefix=$HOME/kconfig-nuttx --enable-frontends=nconf,mconf
 
 sinon, à vous de voir ce qu'il manque en tapant:
 
-    ./configure --program-prefix=kconfig-nuttx- --prefix=/home/[user]/kconfig-nuttx --enable-frontends=nconf,mconf,qconf,gconf
+    ./configure --program-prefix=kconfig-nuttx- --prefix=$HOME/kconfig-nuttx --enable-frontends=nconf,mconf,qconf,gconf
 
 
 ### Build de kconfig
@@ -65,8 +62,7 @@ ou si pas administrateur sur la machine (par exemple en salle de TP IUT)
     make installcheck
 si OK alors
     make install
-puis
-    ajout de kconfig dans votre PATH
+puis ajout de kconfig dans votre PATH
     ajouter a la fin du ~/.bashrc la ligne [export PATH=$PATH:~/kconfig-nuttx/bin]
 
 
@@ -90,11 +86,26 @@ Les fichiers résultants (RTOS + applications) se retrouvent dans ~/projects/nut
 - le fichier binaire: nuttx.bin
 	
 ## Téléversement sur la carte
-### Segger JLink
+### Segger JLink (wip)
 (à completer)
 
-### OpenOCD
-(à completer)
+### OpenOCD (wip)
+    sudo aptitude install libtool libhidapi-dev pkg-config libusb-1.0-0-dev
+
+    git clone http://git.code.sf.net/p/openocd/code ~/projects/openocd-code
+    
+    ./bootstrap
+    mkdir ~/openocd
+    ./configure --prefix=$HOME/openocd --enable-jlink --enable-cmsis-dap
+
+    make
+    make install
+
+puis ajout de openocd dans votre PATH
+    ajouter a la fin du ~/.bashrc la ligne [export PATH=$PATH:~/openocd/bin]
+    
+    Les scripts se trouvent dans $HOME/openocd/share/scripts, mais pas celui de la SAM4S-xplained comme vous le savez.
+
 
 ## Applications du projet terrarium (partie à complèter)
 
