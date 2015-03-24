@@ -87,12 +87,14 @@ pour chaque option, il y a une aide (appui sur h) qui est un peu cryptique par m
     
 Les fichiers résultants (RTOS + applications) se retrouvent dans ~/projects/nuttx-code/nuttx/
 - le fichier ELF: nuttx
+- le fichier binaire: nuttx.bin
 	
 ## Téléversement sur la carte
 ### Segger JLink
+(à completer)
 
 ### OpenOCD
-
+(à completer)
 
 ## Applications du projet terrarium (partie à complèter)
 
