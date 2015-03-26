@@ -19,9 +19,13 @@ Il vous faut installer certains pré-requis:
 
 ### ARM GCC
 
+Si linux 32bits:
 * télécharger https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q1-update/+download/gcc-arm-none-eabi-4_9-2015q1-20150306-linux.tar.bz2
 * extraire l'archive dans par example ~  (votre user home)
 * ajouter ~/gcc-arm-none-eabi-4_9-2015q1/bin dans votre PATH, par exemple ajouter a la fin du ~/.bashrc la ligne [export PATH=$PATH:~/gcc-arm-none-eabi-4_9-2015q1/bin]
+
+Sinon
+sudo aptitude install gcc-arm-none-eabi
 
 
 ### NuttX
@@ -78,6 +82,8 @@ Attention: Ne pas faire 'make menuconfig' car nous avons créé un kconfig custo
 pour chaque option, il y a une aide (appui sur h) qui est un peu cryptique par moment.
 
 ### Set the environment
+Bien vérifier aux lignes du fichier les valeurs de TOOLCHAIN_BIN et PATH
+
     . ./setenv.sh
     make
     
