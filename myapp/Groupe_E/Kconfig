@@ -1,0 +1,20 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+config APPLICATION_GROUPE_E
+	bool "Groupe E application"
+	default n
+	---help---
+		Enable the Groupe E application
+
+if APPLICATION_GROUPE_E
+
+config APPLICATION_GROUPE_E_PROGNAME
+	string "Program name"
+	default "Application du groupe E"
+	depends on BUILD_KERNEL
+	---help---
+		Basic application for terrarium students.
+endif

@@ -1,0 +1,37 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+menu "Groupe A"
+source "$APPSDIR/Groupe_A/Kconfig"
+endmenu
+
+menu "Groupe B"
+source "$APPSDIR/Groupe_B/Kconfig"
+endmenu
+
+menu "Groupe D"
+source "$APPSDIR/Groupe_D/Kconfig"
+endmenu
+
+menu "Groupe E"
+source "$APPSDIR/Groupe_E/Kconfig"
+endmenu
+
+menu "Groupe F"
+source "$APPSDIR/Groupe_F/Kconfig"
+endmenu
+
+menu "Groupe G"
+source "$APPSDIR/Groupe_G/Kconfig"
+endmenu
+
+menu "Groupe H"
+source "$APPSDIR/Groupe_H/Kconfig"
+endmenu
+
+menu "Tibo"
+source "$APPSDIR/Tibo/Kconfig"
+endmenu
+

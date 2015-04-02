@@ -1,0 +1,20 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+config APPLICATION_GROUPE_D
+	bool "Groupe D application"
+	default n
+	---help---
+		Enable the Groupe D application
+
+if APPLICATION_GROUPE_D
+
+config APPLICATION_GROUPE_D_PROGNAME
+	string "Program name"
+	default "Application du groupe D"
+	depends on BUILD_KERNEL
+	---help---
+		Basic application for terrarium students.
+endif

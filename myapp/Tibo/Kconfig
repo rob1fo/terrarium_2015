@@ -1,0 +1,20 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+config APPLICATION_TIBO
+	bool "Teacher application"
+	default n
+	---help---
+		Enable the Teacher application
+
+if APPLICATION_TIBO
+
+config APPLICATION_TIBO_PROGNAME
+	string "Program name"
+	default "tibo"
+	depends on BUILD_KERNEL
+	---help---
+		Basic application for terrarium students.
+endif

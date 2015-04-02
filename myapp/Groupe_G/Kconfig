@@ -1,0 +1,20 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+config APPLICATION_GROUPE_A
+	bool "Groupe A application"
+	default n
+	---help---
+		Enable the Groupe A application
+
+if APPLICATION_GROUPE_A
+
+config APPLICATION_GROUPE_A_PROGNAME
+	string "Program name"
+	default "Application du groupe A"
+	depends on BUILD_KERNEL
+	---help---
+		Basic application for terrarium students.
+endif
