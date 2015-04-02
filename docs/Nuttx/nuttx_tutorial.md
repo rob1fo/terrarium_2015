@@ -91,11 +91,12 @@ Les fichiers résultants (RTOS + applications) se retrouvent dans ~/projects/nut
 - le fichier ELF: nuttx
 - le fichier binaire: nuttx.bin
 	
-## Téléversement sur la carte
-### Segger JLink (wip)
-(à completer)
+## Téléversement sur la carte via OpenOCD + JLink-OB (wip)
 
-### OpenOCD (wip)
+### Installation de la dernière version stable sous Debian:
+    sudo aptitude install libhidapi-dev libusb-1.0-0-dev openocd
+
+### Ou compilation à partir des sources:
     sudo aptitude install libtool libhidapi-dev pkg-config libusb-1.0-0-dev
 
     git clone http://git.code.sf.net/p/openocd/code ~/projects/openocd-code
@@ -112,6 +113,9 @@ puis ajout de openocd dans votre PATH
     
     Les scripts se trouvent dans $HOME/openocd/share/scripts, mais pas celui de la SAM4S-xplained comme vous le savez.
 
+### Téléversement d'un binaire
+
+    openocd -f "~/projects/terrarium_2015/resources/openocd/atmel_sam4s_xplained.cfg" -c "program <elf_file> verify reset" 
 
 ## Applications du projet terrarium (partie à complèter)
 
