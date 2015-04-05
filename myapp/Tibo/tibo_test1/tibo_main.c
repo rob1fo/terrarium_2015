@@ -44,9 +44,36 @@
  * Definitions
  ****************************************************************************/
 
+#define ADC_DEVPATH "/dev/adc0"
+
 /****************************************************************************
  * Private Data
  ****************************************************************************/
+
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/************************************************************************************
+ * Name: peripherals_devinit
+ *
+ * Description:
+ *   All SAM34 architectures must provide the following interface to work with
+ *   applications.
+ *   The board_xxx_initialize functions are implemented in BSP, ie 
+ *   configs/sam4s-xplained/src.
+ *
+ ************************************************************************************/
+
+int peripherals_devinit(void)
+{
+#ifdef CONFIG_SAM34_ADC
+  return board_adc_initialize();
+#else
+  return -ENOSYS;
+#endif
+}
 
 /****************************************************************************
  * Public Functions
@@ -56,13 +83,17 @@
  * hello_main
  ****************************************************************************/
 
-#ifdef CONFIG_BUILD_KERNEL
+//#ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
 {
   printf("Hello, World!!\n");
+
+  /* Let configure the SAM4S peripherals we need */
+  peripherals_devinit();
+
   return 0;
 }
-#else
-#error "Application needs CONFIG_BUILD_KERNEL"
-#endif
+//#else
+//#error "Application needs CONFIG_BUILD_KERNEL"
+//#endif
 

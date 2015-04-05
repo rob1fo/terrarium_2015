@@ -3,18 +3,7 @@
 # see misc/tools/kconfig-language.txt.
 #
 
-config APPLICATION_TIBO
-	bool "Teacher application"
-	default n
-	---help---
-		Enable the Teacher application
+menu "Teacher application test1"
+source "$APPSDIR/Tibo/tibo_test1/Kconfig"
+endmenu
 
-if APPLICATION_TIBO
-
-config APPLICATION_TIBO_PROGNAME
-	string "Program name"
-	default "tibo"
-	depends on BUILD_KERNEL
-	---help---
-		Basic application for terrarium students.
-endif

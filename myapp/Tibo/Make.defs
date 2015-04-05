@@ -1,0 +1,4 @@
+ifeq ($(CONFIG_APPLICATION_TIBO_TEST1),y)
+CONFIGURED_APPS += Tibo/tibo_test1
+endif
+

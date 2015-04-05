@@ -1,0 +1,4 @@
+ifeq ($(CONFIG_APPLICATION_GROUPE_B_APP1),y)
+CONFIGURED_APPS += Groupe_B/GroupeB_application1
+endif
+
