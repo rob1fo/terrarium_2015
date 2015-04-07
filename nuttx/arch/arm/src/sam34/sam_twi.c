@@ -68,7 +68,7 @@
 #include "chip/sam_pinmap.h"
 
 #include "sam_periphclks.h"
-#include "sam_pio.h"
+#include "sam_gpio.h"
 #include "sam_twi.h"
 
 #if defined(CONFIG_SAM34_TWI0) || defined(CONFIG_SAM34_TWI1)
@@ -139,8 +139,8 @@ struct twi_attr_s
   uint8_t             twi;        /* TWI device number (for debug output) */
   uint8_t             pid;        /* TWI peripheral ID */
   uint16_t            irq;        /* IRQ number for this TWI bus */
-  pio_pinset_t        sclcfg;     /* TWI CK pin configuration (SCL in I2C-ese) */
-  pio_pinset_t        sdacfg;     /* TWI D pin configuration (SDA in I2C-ese) */
+  gpio_pinset_t       sclcfg;     /* TWI CK pin configuration (SCL in I2C-ese) */
+  gpio_pinset_t       sdacfg;     /* TWI D pin configuration (SDA in I2C-ese) */
   uintptr_t           base;       /* Base address of TWI registers */
   xcpt_t              handler;    /* TWI interrupt handler */
 };
@@ -258,9 +258,9 @@ static const struct twi_attr_s g_twi0attr =
   .twi     = 0,
   .pid     = SAM_PID_TWI0,
   .irq     = SAM_IRQ_TWI0,
-  .sclcfg  = PIO_TWI0_CK,
-  .sdacfg  = PIO_TWI0_D,
-  .base    = SAM_TWI0_VBASE,
+  .sclcfg  = GPIO_TWI0_CK,
+  .sdacfg  = GPIO_TWI0_D,
+  .base    = SAM_TWI0_BASE,
   .handler = twi0_interrupt,
 };
 
@@ -273,9 +273,9 @@ static const struct twi_attr_s g_twi1attr =
   .twi     = 1,
   .pid     = SAM_PID_TWI1,
   .irq     = SAM_IRQ_TWI1,
-  .sclcfg  = PIO_TWI1_CK,
-  .sdacfg  = PIO_TWI1_D,
-  .base    = SAM_TWI1_VBASE,
+  .sclcfg  = GPIO_TWI1_CK,
+  .sdacfg  = GPIO_TWI1_D,
+  .base    = SAM_TWI1_BASE,
   .handler = twi1_interrupt,
 };
 
@@ -1242,15 +1242,14 @@ static uint32_t twi_hw_setfrequency(struct twi_dev_s *priv, uint32_t frequency)
 static void twi_hw_initialize(struct twi_dev_s *priv, uint32_t frequency)
 {
   irqstate_t flags = irqsave();
-  uint32_t regval;
   uint32_t mck;
 
   i2cvdbg("TWI%d Initializing\n", priv->attr->twi);
 
   /* Configure PIO pins */
 
-  sam_configpio(priv->attr->sclcfg);
-  sam_configpio(priv->attr->sdacfg);
+  sam_configgpio(priv->attr->sclcfg);
+  sam_configgpio(priv->attr->sdacfg);
 
   /* Enable peripheral clocking */
 
@@ -1279,12 +1278,6 @@ static void twi_hw_initialize(struct twi_dev_s *priv, uint32_t frequency)
   mck = BOARD_MCK_FREQUENCY;
 
   priv->twiclk     = mck;
-  regval           = 0;
-
-  /* Set the TWI peripheral input clock to the maximum, valid frequency */
-
-  regval |= PMC_PCR_PID(priv->attr->pid) | PMC_PCR_CMD | PMC_PCR_EN;
-  twi_putabs(priv, SAM_PMC_PCR, regval);
 
   /* Set the initial TWI data transfer frequency */
 
@@ -1467,8 +1460,8 @@ int up_i2creset(FAR struct i2c_dev_s *dev)
   sclpin = MKI2C_OUTPUT(priv->attr->sclcfg);
   sdapin = MKI2C_OUTPUT(priv->attr->sdacfg);
 
-  sam_configpio(sclpin);
-  sam_configpio(sdapin);
+  sam_configgpio(sclpin);
+  sam_configgpio(sdapin);
 
   /* Peripheral clocking must be enabled in order to read valid data from
    * the output pin (clocking is enabled automatically for pins configured
