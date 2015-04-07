@@ -1,8 +1,9 @@
-/bin
-/external
-/.context
-/.config
-/.depend
-/*.lib
-/romfs.img
-/boot_romfsimg.h
+.context
+.config
+.depend
+*.lib
+*.o
+*.a
+*.obj
+Make.dep
+
