@@ -1,0 +1,36 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+if ARCH_BOARD_SAM4S_XPLAINED
+
+config SAM4S_XPLAINED_CDCACM_DEVMINOR
+	int "CDC/ACM Device Minor"
+	default 0
+	depends on SAM34_UDP && USBDEV && CDCACM
+
+config SAM4S_XPLAINED_SCHED_TIMER_DEVPATH
+    string "Scheduler Timer Device Path"
+	default "/dev/rtt0"
+	depends on TIMER && SYSTEMTICK_EXTCLK
+
+config SAM4S_XPLAINED_CPULOAD_TIMER_DEVPATH
+    string "CPU Load Timer Device Path"
+	default "/dev/tc0"
+	depends on TIMER && SCHED_CPULOAD && SCHED_CPULOAD_EXTCLK
+
+
+config SAM4S_XPLAINED_CHANNEL
+	int "PWM channel number"
+	default 0 if SAM34_PWM_CHAN0
+	default 1 if SAM34_PWM_CHAN1
+	default 2 if SAM34_PWM_CHAN2
+	default 3 if SAM34_PWM_CHAN3
+	range 0 3
+	depends on PWM && SAM34_PWM
+	---help---
+		Selects the PWM channel number that will be used to perform the PWM
+		test.  See apps/examples/pwm.
+
+endif

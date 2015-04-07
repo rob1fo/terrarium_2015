@@ -1,0 +1,3 @@
+ifeq ($(CONFIG_APPLICATION_TEACHER_TEST1),y)
+CONFIGURED_APPS += terrarium/teacher
+endif

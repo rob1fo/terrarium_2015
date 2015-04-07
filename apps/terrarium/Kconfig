@@ -1,0 +1,37 @@
+#
+# For a description of the syntax of this configuration file,
+# see misc/tools/kconfig-language.txt.
+#
+
+menu "Applications du Groupe A"
+source "$APPSDIR/terrarium/Groupe_A/Kconfig"
+endmenu
+
+menu "Applications du Groupe B"
+source "$APPSDIR/terrarium/Groupe_B/Kconfig"
+endmenu
+
+menu "Applications du Groupe D"
+source "$APPSDIR/terrarium/Groupe_D/Kconfig"
+endmenu
+
+menu "Applications du Groupe E"
+source "$APPSDIR/terrarium/Groupe_E/Kconfig"
+endmenu
+
+menu "Applications du Groupe F"
+source "$APPSDIR/terrarium/Groupe_F/Kconfig"
+endmenu
+
+menu "Applications du Groupe G"
+source "$APPSDIR/terrarium/Groupe_G/Kconfig"
+endmenu
+
+menu "Applications du Groupe H"
+source "$APPSDIR/terrarium/Groupe_H/Kconfig"
+endmenu
+
+menu "Applications du professeur"
+source "$APPSDIR/terrarium/teacher/Kconfig"
+endmenu
+

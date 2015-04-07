@@ -1,9 +1,0 @@
-#
-# For a description of the syntax of this configuration file,
-# see misc/tools/kconfig-language.txt.
-#
-
-menu "Teacher application test1"
-source "$APPSDIR/Tibo/tibo_test1/Kconfig"
-endmenu
-
