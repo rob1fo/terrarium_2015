@@ -65,9 +65,13 @@ fi
 
 # This is the Cygwin path to the location where I build the buildroot
 # toolchain.
-export TOOLCHAIN_BIN="${WD}/../misc/buildroot/build_arm_nofpu/staging_dir/bin"
+export TOOLCHAIN_BIN="/usr/sbin"
 
-# Add the path to the toolchain to the PATH varialble
-export PATH="${TOOLCHAIN_BIN}:/sbin:/usr/sbin:${PATH_ORIG}"
+# Add the path to the toolchain to the PATH variable
+export PATH="/sbin:/usr/sbin:${PATH_ORIG}"
 
 echo "PATH : ${PATH}"
+
+#export APPSDIR="~/projects/terrarium_2015/apps"
+
+echo "APPSDIR : ${APPSDIR}"
