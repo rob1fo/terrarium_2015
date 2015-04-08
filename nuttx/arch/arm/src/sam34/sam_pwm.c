@@ -56,7 +56,7 @@
 #include "up_arch.h"
 
 #include "sam_periphclks.h"
-#include "sam_pio.h"
+#include "sam_gpio.h"
 #include "sam_pwm.h"
 
 #ifdef CONFIG_SAM34_PWM
@@ -143,7 +143,7 @@
 #    define CLKA_PRE      256
 
 #  elif (BOARD_MCK_FREQUENCY / 512 / CONFIG_SAM34_PWM_CLKA_FREQUENCY) < 256
-#    define CLKA_PRE_BITS PWM_CLK_PREA_DIV512
+#    define CLKA_PRE_BITS PWM_CLK_PREA_MCKDIV512
 #    define CLKA_PRE      512
 
 #  elif (BOARD_MCK_FREQUENCY / 1024 / CONFIG_SAM34_PWM_CLKA_FREQUENCY) < 256
@@ -223,7 +223,7 @@
 
 #else
 #  undef  CONFIG_SAM34_PWM_CLKB_FREQUENCY
-#  define CLKB_PRE_BITS PWM_CLK_PREB_DIV1
+#  define CLKB_PRE_BITS PWM_CLK_PREB_MCK
 #  define CLKB_DIV_BITS PWM_CLK_DIVB_OFF
 #endif
 
@@ -389,8 +389,8 @@
 
 /* Pin configuration ********************************************************/
 
-#define PWM_INPUTCFG     (PIO_INPUT | PIO_CFG_DEFAULT | PIO_DRIVE_LOW)
-#define PWM_PINMASK      (PIO_PORT_MASK | PIO_PIN_MASK)
+#define PWM_INPUTCFG     (GPIO_INPUT | GPIO_CFG_DEFAULT)
+#define PWM_PINMASK      (GPIO_PORT_MASK | GPIO_PIN_MASK)
 #define PWM_MKINPUT(cfg) (((cfg) & PWM_PINMASK) | PWM_INPUTCFG)
 
 /* Debug ********************************************************************/
@@ -442,9 +442,9 @@ struct sam_pwm_chan_s
   uint8_t channel;                 /* PWM channel: {0,..3} */
   uint8_t clksrc;                  /* 0=MCK; 1=CLKA; 2=CLKB */
   uint8_t divlog2;                 /* Log2 MCK divisor: 0->1, 1->2, 2->4, ... 10->1024 */
-  pio_pinset_t ohpincfg;           /* Output high pin configuration */
-  pio_pinset_t olpincfg;           /* Output low pin configuration */
-  pio_pinset_t fipincfg;           /* Fault input pin configuration */
+  gpio_pinset_t ohpincfg;          /* Output high pin configuration */
+  gpio_pinset_t olpincfg;          /* Output low pin configuration */
+  gpio_pinset_t fipincfg;          /* Fault input pin configuration */
 };
 
 /* This structure represents the overall state of the PWM peripheral */
@@ -556,7 +556,7 @@ static struct sam_pwm_chan_s g_pwm_chan0 =
 #endif
 
 #ifdef CONFIG_SAM34_PWM_CHAN0_OUTPUTH
-  .ohpincfg    = PIO_PWM0_H,
+		.ohpincfg = GPIO_PWM0_H_1,
 #endif
 #ifdef CONFIG_SAM34_PWM_CHAN0_OUTPUTL
   .olpincfg    = PIO_PWM0_L,
@@ -751,7 +751,7 @@ static uint32_t pwm_getreg(struct sam_pwm_chan_s *chan, int offset)
   uintptr_t regaddr;
   uint32_t  regval;
 
-  regaddr = SAM_PWMC_VBASE + offset;
+  regaddr = SAM_PWM_BASE + offset;
   regval  = getreg32(regaddr);
 
 #ifdef CONFIG_SAM34_PWM_REGDEBUG
@@ -839,7 +839,7 @@ static void pwm_putreg(struct sam_pwm_chan_s *chan, int offset,
                        uint32_t regval)
 {
 #ifdef PWM_SINGLE
-  uintptr_t regaddr = SAM_PWMC_VBASE + offset;
+  uintptr_t regaddr = SAM_PWM_BASE + offset;
 
 #ifdef CONFIG_SAM34_PWM_REGDEBUG
   if (pwm_checkreg(&g_pwm, true, regval, regaddr))
@@ -1025,17 +1025,17 @@ static int pwm_setup(FAR struct pwm_lowerhalf_s *dev)
 
   if (chan->ohpincfg)
     {
-      (void)sam_configpio(chan->ohpincfg);
+      (void)sam_configgpio(chan->ohpincfg);
     }
 
   if (chan->olpincfg)
     {
-      (void)sam_configpio(chan->olpincfg);
+      (void)sam_configgpio(chan->olpincfg);
     }
 
   if (chan->fipincfg)
     {
-      (void)sam_configpio(chan->fipincfg);
+      (void)sam_configgpio(chan->fipincfg);
     }
 
   return OK;
@@ -1098,20 +1098,20 @@ static int pwm_start(FAR struct pwm_lowerhalf_s *dev,
 
   /* Disable the channel (should already be disabled) */
 
-  pwm_putreg(chan, SAM_PWM_DIS_OFFSET, PWM_CHID(chan->channel));
+  pwm_putreg(chan, SAM_PWM_DIS_OFFSET, /*SAM_ENAB_CHID(chan->channel)*/0);
 
   /* Determine the clock source */
 
   switch (chan->clksrc)
     {
     case PWM_CLKSRC_MCK:
-      regval = PWM_CMR_CPRE_MCKDIV(chan->divlog2);
+      regval = PWMCH_MR_CPRE_MCKDIV(chan->divlog2);
       fsrc   = BOARD_MCK_FREQUENCY >> chan->divlog2;
       break;
 
 #ifdef CONFIG_SAM34_PWM_CLKA
     case PWM_CLKSRC_CLKA:
-      regval = PWM_CMR_CPRE_CLKA;
+      regval = PWMCH_MR_CPRE_CLKA;
       fsrc   = CLKA_FREQUENCY;
       break;
 #endif
@@ -1130,7 +1130,7 @@ static int pwm_start(FAR struct pwm_lowerhalf_s *dev,
 
   /* Configure the channel */
 
-  pwm_chan_putreg(chan, SAM_PWM_CMR_OFFSET, PWM_CMR_CPRE_CLKA);
+  pwm_chan_putreg(chan, SAM_PWM_CMR_OFFSET, PWMCH_MR_CPRE_CLKA);
 
   /* Set the PWM period.
    *
@@ -1171,7 +1171,7 @@ static int pwm_start(FAR struct pwm_lowerhalf_s *dev,
 
   /* Enable the channel */
 
-  pwm_putreg(chan, SAM_PWM_ENA_OFFSET, PWM_CHID(chan->channel));
+  pwm_putreg(chan, SAM_PWM_ENA_OFFSET, SAM_ENAB_CHID(chan->channel));
   pwm_dumpregs(chan, "After start");
   return OK;
 }
@@ -1204,11 +1204,11 @@ static int pwm_stop(FAR struct pwm_lowerhalf_s *dev)
   /* Disable further PWM interrupts from this channel */
 
   pwm_putreg(chan, SAM_PWM_IDR1_OFFSET,
-             PWM_INT1_CHID(chan->channel) | PWM_INT1_FCHID(chan->channel));
+		  SAM_INT_CHID(chan->channel) | SAM_INT_FCHID(chan->channel));
 
   /* Disable the channel */
 
-  pwm_putreg(chan, SAM_PWM_DIS_OFFSET, PWM_CHID(chan->channel));
+//  pwm_putreg(chan, SAM_PWM_DIS_OFFSET, SAM_ENAB_CHID(chan->channel));
   pwm_dumpregs(chan, "After stop");
   return OK;
 }
@@ -1261,17 +1261,17 @@ static void pwm_resetpins(FAR struct sam_pwm_chan_s *chan)
 {
   if (chan->ohpincfg)
     {
-      (void)sam_configpio(PWM_MKINPUT(chan->ohpincfg));
+      (void)sam_configgpio(PWM_MKINPUT(chan->ohpincfg));
     }
 
   if (chan->olpincfg)
     {
-      (void)sam_configpio(PWM_MKINPUT(chan->olpincfg));
+      (void)sam_configgpio(PWM_MKINPUT(chan->olpincfg));
     }
 
   if (chan->fipincfg)
     {
-      (void)sam_configpio(PWM_MKINPUT(chan->fipincfg));
+      (void)sam_configgpio(PWM_MKINPUT(chan->fipincfg));
     }
 }
 
@@ -1357,8 +1357,8 @@ FAR struct pwm_lowerhalf_s *sam_pwminitialize(int channel)
 
       /* Disable all PWM interrupts at the PWM peripheral */
 
-      pwm_putreg(chan, SAM_PWM_IDR1_OFFSET, PWM_INT1_ALL);
-      pwm_putreg(chan, SAM_PWM_IDR2_OFFSET, PWM_INT2_ALL);
+      pwm_putreg(chan, SAM_PWM_IDR1_OFFSET, SAM_INT_ALL);
+      pwm_putreg(chan, SAM_PWM_IDR2_OFFSET, SAM_INT_ALL);
 
       /* Attach the PWM interrupt handler */
 

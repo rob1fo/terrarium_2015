@@ -376,15 +376,26 @@
 #define SAM_PWMCH3_DT                (SAM_PWMCH3_BASE+SAM_PWMCH_DT_OFFSET)
 #define SAM_PWMCH3_DTUPD             (SAM_PWMCH3_BASE+SAM_PWMCH_DTUPD_OFFSET)
 
-#define SAM_PWM_CHANA_BASE(n)      (SAM_PWMC_VBASE+SAM_PWM_CHANA_OFFSET(n))
-#define SAM_PWM_CMR(n)             (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CMR_OFFSET)
-#define SAM_PWM_CDTY(n)            (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CDTY_OFFSET)
-#define SAM_PWM_CDTYUPD(n)         (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CDTYUPD_OFFSET)
-#define SAM_PWM_CPRD(n)            (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CPRD_OFFSET)
-#define SAM_PWM_CPRDUPD(n)         (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CPRDUPD_OFFSET)
-#define SAM_PWM_CCNT(n)            (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CCNT_OFFSET)
-#define SAM_PWM_DT(n)              (SAM_PWM_CHANA_BASE(n)+SAM_PWM_DT_OFFSET)
-#define SAM_PWM_DTUPD(n)           (SAM_PWM_CHANA_BASE(n)+SAM_PWM_DTUPD_OFFSET)
+
+#define SAM_PWM_CHANA_OFFSET(n)      (0x0200 + ((int)(n) << 5)) /* n=0..3 */
+#define SAM_PWM_CMR_OFFSET           0x0000 /* PWM Channel Mode Register */
+#define SAM_PWM_CDTY_OFFSET          0x0004 /* PWM Channel Duty Cycle Register */
+#define SAM_PWM_CDTYUPD_OFFSET       0x0008 /* PWM Channel Duty Cycle Update Register */
+#define SAM_PWM_CPRD_OFFSET          0x000c /* PWM Channel Period Register */
+#define SAM_PWM_CPRDUPD_OFFSET       0x0010 /* PWM Channel Period Update Register */
+#define SAM_PWM_CCNT_OFFSET          0x0014 /* PWM Channel Counter Register */
+#define SAM_PWM_DT_OFFSET            0x0018 /* PWM Channel Dead Time Register */
+#define SAM_PWM_DTUPD_OFFSET         0x001c /* PWM Channel Dead Time Update Register */
+
+#define SAM_PWM_CHANA_BASE(n)        (SAM_PWM_BASE+SAM_PWM_CHANA_OFFSET(n))
+#define SAM_PWM_CMR(n)               (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CMR_OFFSET)
+#define SAM_PWM_CDTY(n)              (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CDTY_OFFSET)
+#define SAM_PWM_CDTYUPD(n)           (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CDTYUPD_OFFSET)
+#define SAM_PWM_CPRD(n)              (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CPRD_OFFSET)
+#define SAM_PWM_CPRDUPD(n)           (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CPRDUPD_OFFSET)
+#define SAM_PWM_CCNT(n)              (SAM_PWM_CHANA_BASE(n)+SAM_PWM_CCNT_OFFSET)
+#define SAM_PWM_DT(n)                (SAM_PWM_CHANA_BASE(n)+SAM_PWM_DT_OFFSET)
+#define SAM_PWM_DTUPD(n)             (SAM_PWM_CHANA_BASE(n)+SAM_PWM_DTUPD_OFFSET)
 
 #if defined(CONFIG_ARCH_CHIP_SAM4E)
 #  define SAM_PWMCH_BASE2(n)         (SAM_PWM_BASE+SAM_PWMCH_OFFSET2(n))
@@ -457,7 +468,7 @@
 
 /* PWM Enable Register, PWM Disable Register, and PWM Status Register common bit-field definitions */
 
-#define SAM_ENAB_CHID(n)             (1 << ((n))
+#define SAM_ENAB_CHID(n)             (1 << (n))
 #  define SAM_ENAB_CHID0             (1 << 0)  /* Bit 0:  Counter Event Channel 0 Interrupt */
 #  define SAM_ENAB_CHID1             (1 << 1)  /* Bit 1:  Counter Event Channel 1 Interrupt */
 #  define SAM_ENAB_CHID2             (1 << 2)  /* Bit 2:  Counter Event Channel 2 Interrupt */
@@ -477,6 +488,7 @@
 #  define SAM_INT_FCHID1             (1 << 17) /* Bit 17: Fault Protection Trigger Channel 1 Interrupt */
 #  define SAM_INT_FCHID2             (1 << 18) /* Bit 18: Fault Protection Trigger Channel 2 Interrupt */
 #  define SAM_INT_FCHID3             (1 << 19) /* Bit 19: Fault Protection Trigger Channel 3 Interrupt */
+#define SAM_INT_ALL                  (0x000f000f)
 
 /* PWM Sync Channels Mode Register */
 
@@ -775,6 +787,7 @@
 
 #define PWMCH_MR_CPRE_SHIFT          (0)       /* Bits 0-3: Channel Pre-scaler */
 #define PWMCH_MR_CPRE_MASK           (15 << PWMCH_MR_CPRE_SHIFT)
+#  define PWMCH_MR_CPRE_MCKDIV(n)    ((uint32_t)(n) << PWMCH_MR_CPRE_SHIFT)  /* Master clock */
 #  define PWMCH_MR_CPRE_MCK          (0  << PWMCH_MR_CPRE_SHIFT) /* MCK */
 #  define PWMCH_MR_CPRE_MCKDIV2      (1  << PWMCH_MR_CPRE_SHIFT) /* MCK/2 */
 #  define PWMCH_MR_CPRE_MCKDIV4      (2  << PWMCH_MR_CPRE_SHIFT) /* MCK/4 */
