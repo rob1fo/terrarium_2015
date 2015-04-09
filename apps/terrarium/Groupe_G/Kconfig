@@ -3,17 +3,17 @@
 # see misc/tools/kconfig-language.txt.
 #
 
-config APPLICATION_GROUPE_A
-	bool "Groupe A application"
+config APPLICATION_GROUPE_G
+	bool "Application du controle du LCD I2C 0 et PWM 0"
 	default n
 	---help---
 		Enable the Groupe A application
 
-if APPLICATION_GROUPE_A
+if APPLICATION_GROUPE_G
 
-config APPLICATION_GROUPE_A_PROGNAME
-	string "Program name"
-	default "Application du groupe A"
+config APPLICATION_GROUPE_G_PROGNAME
+	string "pwmi2c"
+	default "Application du controle du LCD I2C 0 et PWM 0"
 	depends on BUILD_KERNEL
 	---help---
 		Basic application for terrarium students.

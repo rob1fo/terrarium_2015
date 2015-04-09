@@ -1,4 +1,4 @@
-ifeq ($(CONFIG_APPLICATION_GROUPE_G_APP1),y)
-CONFIGURED_APPS += Groupe_G/GroupeG_application1
+ifeq ($(CONFIG_APPLICATION_GROUPE_G_PWMI2C),y)
+CONFIGURED_APPS += Groupe_G/pwmi2c
 endif
 
