@@ -8,14 +8,14 @@
 #define PWMIOC_SETCHARACTERISTICS 2
 #define FAR
 
-
-int pwm_init(struct pwm_lowerhalf_s **dev)
+/*int pwm_init(struct pwm_lowerhalf_s **dev)
 {
 	if(pwm_devinit() != 0) return 2;
 	*dev = sam_pwminitialize(0);
 	if(!*dev) return 1;
 	return pwm_register(PWM_DEVPATH, *dev);
-}
+}*/
+// Déjà initialisé dans le fichier sam_pwm.c de config
 
 static void help(char *s)
 {
@@ -74,23 +74,30 @@ int pwmi2c_main(int argc, char *argv[])
 	if(flag & 3) // Les 2 arguments sont requis
 	{
 		int a;
+		/*
 		if(pwm_init(&dev) != 0)
 		{
 			puts("Erreur d'initialisation du pwm");
 			return 1;
 		}
 		puts("Initialisation du pwm reussie");
+		*/
 		
-		int fd = open(PWM_DEVPATH, O_RDONLY);
+		int fd = my_open(PWM_DEVPATH, O_RDONLY);
+		if( fd != 0 )
+		{
+			puts("open a échoué");
+		}
+
 		struct pwm_info_s info;
 		info.frequency = freq;
 		info.duty = ((unsigned)dc << 16) / 100;
-		if(ioctl(fd, PWMIOC_SETCHARACTERISTICS, &info) != 0)
+		if(my_ioctl(fd, PWMIOC_SETCHARACTERISTICS, &info) != 0)
 		{
 			puts("ioctl a échoué");
 			return 1;
 		}
-		if(ioctl(fd, PWMIOC_START, 0) != 0)
+		if(my_ioctl(fd, PWMIOC_START, 0) != 0)
 		{
 			puts("ioctl a échoué");
 			return 1;

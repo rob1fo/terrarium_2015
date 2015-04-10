@@ -22,3 +22,5 @@ long  (*up_i2cuninitialize)(struct i2c_dev_s *);
 int pwm_init(struct pwm_lowerhalf_s **dev);
 int pwmi2c_main(int argc, char *argv[]);
 void hello();
+int mock_open(char* path, int param);
+int mock_ioctl(int fd, int command, void * arg);
